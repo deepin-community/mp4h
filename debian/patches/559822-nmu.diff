@@ -1,0 +1,216 @@
+Description: Additional source code patches as of Debian package 1.3.1-4.1
+Bug-Debian: https://bugs.debian.org/559822
+
+diff --git a/Makefile.am b/Makefile.am
+index ef51e6f..5034f74 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,5 +1,6 @@
+ 
+ AUTOMAKE_OPTIONS = foreign
++ACLOCAL_AMFLAGS = -I m4
+ 
+ DIST_SUBDIRS = intl pcre lib src po doc modules tests
+ 
+diff --git a/acinclude.m4 b/acinclude.m4
+index f010988..13d1caa 100755
+--- a/acinclude.m4
++++ b/acinclude.m4
+@@ -8,7 +8,7 @@
+ 
+ # serial 1
+ 
+-AC_DEFUN(MP4H_LOADABLE_MODULES,
++AC_DEFUN([MP4H_LOADABLE_MODULES],
+   [AC_MSG_CHECKING(if support for loadable modules is requested)
+   AC_ARG_WITH(modules,
+   [  --with-modules=x,y,z    select loadable modules to compile],
+diff --git a/configure.ac b/configure.ac
+index 4a10699..92badef 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1,5 +1,6 @@
+ dnl  As this file is called configure.ac, Autoconf 2.50 is required
+ AC_PREREQ([2.50])
++AC_CONFIG_MACRO_DIR([m4])
+ 
+ AC_INIT([mp4h], [1.3.1])
+ PACKAGE_DATE="11-Jan-2003"
+@@ -40,7 +41,6 @@ AC_DEFINE_UNQUOTED([MP4HLIBDIR], ["$MP4HLIBDIR/$PACKAGE_VERSION:$MP4HDATADIR"],
+ 
+ AC_PROG_CC
+ AC_PROG_CPP
+-AC_PROG_RANLIB
+ AC_PROG_MAKE_SET
+ AC_PROG_INSTALL 
+ 
+@@ -105,13 +105,8 @@ test ".$with_modules" = .yes && with_modules=`echo $module_list | sed -e 's/  */
+ if test ".$with_modules" != .no; then
+     echo ''
+     $shtool echo -e "Checking for %Bloadable modules%b support"
+-    AC_LIBTOOL_WIN32_DLL
+-    AC_LIBLTDL_CONVENIENCE
+-    AC_ENABLE_SHARED
+-    AC_DISABLE_STATIC
+-    AC_LIBTOOL_DLOPEN
+-    AC_LIBTOOL_SETUP
+-    AC_PROG_LIBTOOL
++    LT_INIT([dlopen win32-dll shared disable-static])
++    LTDL_INIT([])
+ 
+     case ,$with_modules, in
+       *,intl:gettext,* )
+@@ -157,10 +152,6 @@ fi
+ 
+ test ".$with_modules" = . && with_modules=none
+ 
+-AC_LIB_LTDL
+-AC_SUBST(INCLTDL)
+-AC_SUBST(LIBLTDL)
+-
+ AC_MSG_CHECKING([which modules to compile])
+ AC_MSG_RESULT([$with_modules])
+ 
+diff --git a/doc/Makefile.am b/doc/Makefile.am
+index 3a2be18..665b1a9 100644
+--- a/doc/Makefile.am
++++ b/doc/Makefile.am
+@@ -40,6 +40,9 @@ $(PROGRAM):
+ 
+ EXTRA_DIST = mp4h.mp4h list-tags html.out pod.out texinfo.out
+ 
++html.out pod.out texinfo.out:
++	: # defeat GNU make's implicit rules
++
+ CLEANFILES = \
+    mp4h.pod mp4h.1 \
+    mp4h.html \
+diff --git a/modules/example/Makefile.am b/modules/example/Makefile.am
+index fafba10..b36251d 100644
+--- a/modules/example/Makefile.am
++++ b/modules/example/Makefile.am
+@@ -1,6 +1,6 @@
+ 
+ INCLUDES = -I$(top_srcdir)/lib  -I$(top_srcdir)/src @INTLINCL@
+-LDFLAGS  = -no-undefined -module -avoid-version -rpath $(pkglibdir) @DLLDFLAGS@
++AM_LDFLAGS  = -no-undefined -module -avoid-version -rpath $(pkglibdir) @DLLDFLAGS@
+ 
+ if DO_MODULE_TEST
+ noinst_LTLIBRARIES = test.la
+diff --git a/modules/intl/Makefile.am b/modules/intl/Makefile.am
+index aab636a..fa50340 100644
+--- a/modules/intl/Makefile.am
++++ b/modules/intl/Makefile.am
+@@ -13,7 +13,7 @@ TESTFILES = gettext.mp4h
+ man3ext   = 3
+ 
+ INCLUDES  = -I$(top_srcdir)/lib  -I$(top_srcdir)/src @INTLINCL@
+-LDFLAGS   = -no-undefined -module -avoid-version -rpath $(mp4mdir) @DLLDFLAGS@
++AM_LDFLAGS   = -no-undefined -module -avoid-version -rpath $(mp4mdir) @DLLDFLAGS@
+ 
+ if DO_MODULE_INTL_GETTEXT
+ mp4m_LTLIBRARIES   = gettext.la
+diff --git a/modules/javascript/Makefile.am b/modules/javascript/Makefile.am
+index 8dd230c..e08f490 100644
+--- a/modules/javascript/Makefile.am
++++ b/modules/javascript/Makefile.am
+@@ -5,7 +5,7 @@ thisdir  = javascript
+ mp4mdir = $(pkglibdir)/@VERSION@/$(thisdir)
+ 
+ INCLUDES = -I$(top_srcdir)/lib  -I$(top_srcdir)/src @INTLINCL@
+-LDFLAGS  = -no-undefined -module -avoid-version -rpath $(mp4mdir) @DLLDFLAGS@
++AM_LDFLAGS  = -no-undefined -module -avoid-version -rpath $(mp4mdir) @DLLDFLAGS@
+ 
+ if DO_MODULE_JAVASCRIPT_MOZJS
+ MODULE_JAVASCRIPT_MOZJS = mozjs.la
+diff --git a/modules/system/Makefile.am b/modules/system/Makefile.am
+index 0fcf7c1..8e6b218 100644
+--- a/modules/system/Makefile.am
++++ b/modules/system/Makefile.am
+@@ -13,7 +13,7 @@ TESTFILES = sh.mp4h
+ man3ext   = 3
+ 
+ INCLUDES  = -I$(top_srcdir)/lib  -I$(top_srcdir)/src @INTLINCL@
+-LDFLAGS   = -no-undefined -module -avoid-version -rpath $(mp4mdir) @DLLDFLAGS@
++AM_LDFLAGS   = -no-undefined -module -avoid-version -rpath $(mp4mdir) @DLLDFLAGS@
+ 
+ if DO_MODULE_SYSTEM
+ mp4m_LTLIBRARIES = sh.la exec.la
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 2e43b62..7c2973a 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -1,5 +1,5 @@
+ 
+-INCLUDES = -I$(top_srcdir)/pcre -I$(top_srcdir)/lib @INTLINCL@
++INCLUDES = -I$(top_srcdir)/pcre -I$(top_srcdir)/lib @INTLINCL@ $(LTDLINCL)
+ 
+ bin_PROGRAMS = mp4h
+ 
+@@ -8,7 +8,8 @@ EXTRA_mp4h_SOURCES = module.c
+ EXTRA_DIST = readme.tmpl
+ 
+ if LOADABLE_MODULES
+-MODULE_C = module.c ltdl.c
++MODULE_C = module.c
++MODULE_LDADD = $(LIBLTDL)
+ endif
+ 
+ mp4h_SOURCES = builtin.c debug.c devel.c freeze.c input.c \
+@@ -16,8 +17,8 @@ mp4h_SOURCES = builtin.c debug.c devel.c freeze.c input.c \
+ if LOADABLE_MODULES
+ mp4h_LDFLAGS = -export-dynamic
+ endif
+-mp4h_LDADD   = -lm $(top_builddir)/lib/libmp4h.a $(top_builddir)/pcre/libpcre.a @INTLLIBS@
++mp4h_LDADD   = -lm $(top_builddir)/lib/libmp4h.a $(top_builddir)/pcre/libpcre.a @INTLLIBS@ $(MODULE_LDADD)
+ 
+ include_HEADERS = mp4h.h
+-noinst_HEADERS  = builtin.h ltdl.h
++noinst_HEADERS  = builtin.h
+ 
+diff --git a/src/ltdl.c.patch b/src/ltdl.c.patch
+deleted file mode 100644
+index a6fbf64..0000000
+--- a/src/ltdl.c.patch
++++ /dev/null
+@@ -1,40 +0,0 @@
+---- ltdl.c	Tue Jun 11 18:23:20 2002
+-+++ ltdl.c	Sun Jun 30 23:23:36 2002
+-@@ -2039,7 +2039,7 @@
+- 	}
+- 
+-       /* try to open the not-installed module */
+--      if (!installed)
+-+      if (!installed && objdir)
+- 	{
+- 	  if (tryall_dlopen_module (handle, dir, objdir, dlname) == 0)
+- 	    return 0;
+-@@ -2047,7 +2047,7 @@
+- 
+-       /* maybe it was moved to another directory */
+-       {
+--	  if (tryall_dlopen_module (handle,
+-+	  if (dir && tryall_dlopen_module (handle,
+- 				    (const char *) 0, dir, dlname) == 0)
+- 	    return 0;
+-       }
+-@@ -2691,10 +2691,6 @@
+- 	    }
+- #endif
+- 	}
+--      if (!file)
+--	{
+--	  file = fopen (filename, LT_READTEXT_MODE);
+--	}
+- 
+-       /* If we didn't find the file by now, it really isn't there.  Set
+- 	 the status flag, and bail out.  */
+-@@ -2990,7 +2986,7 @@
+-      failed, it is better to return an error message here than to
+-      report FILE_NOT_FOUND when the alternatives (foo.so etc) are not
+-      in the module search path.  */
+--  if (handle || ((errors > 0) && file_not_found ()))
+-+  if (handle || ((errors > 0) && !file_not_found ()))
+-     {
+-       LT_DLFREE (tmp);
+-       return handle;

@@ -1,0 +1,6 @@
+<set-var a="foo" />
+<include file="01.inc" verbatim="true" alt="01.inc was not found" />
+<get-var a /><set-var a="foo" />
+<include file="01.inc" alt="01.inc was not found" />
+<get-var a /><set-var a="foo" />
+<include file="notfound.inc" alt="notfound.inc was not found" />

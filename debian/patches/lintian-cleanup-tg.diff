@@ -1,0 +1,114 @@
+Description: Fix tons of lintian warnings, mostly common typos in documentation
+Author: Thorsten Glaser <tg@mirbsd.de>
+
+Index: mp4h/doc/mp4h.mp4h
+===================================================================
+--- mp4h.orig/doc/mp4h.mp4h	2013-04-24 01:45:37.756875790 +0200
++++ mp4h/doc/mp4h.mp4h	2013-04-24 01:46:16.717470267 +0200
+@@ -663,7 +663,7 @@
+ <example>
+ <set-var version="0.10.1" />
+ This is version <get-var version />
+-<set-var-x name="osversion">Operating sytem is
++<set-var-x name="osversion">Operating system is
+ "<include command="uname" /><include command="uname -r" />"</set-var-x>
+ <get-var osversion />
+ </example>
+@@ -836,7 +836,7 @@
+ </tag:description>
+ 
+ <para>
+-Show informations on symbols.  If it is a variable name, the <command
++Show information on symbols.  If it is a variable name, the <command
+ STRING /> word is printed as well as the number of lines contained within
+ this variable.
+ 
+@@ -1892,7 +1892,7 @@ Returns <true/> if file exists.
+ </tag:description>
+ 
+ <para>
+-Returns an array of informations on this file.  These informations are:
++Returns an array of information on this file.  These information are:
+ size, type, ctime, mtime, atime, owner and group.
+ </para>
+ 
+@@ -2133,7 +2133,7 @@ macro used to generate all examples of this documentation is
+ </tag:description>
+ 
+ <para>
+-This comand acts like the <optflag d /> flag but can be ynamically
++This command acts like the <optflag d /> flag but can be ynamically
+ changed.
+ </para>
+ 
+@@ -2158,7 +2158,7 @@ being processed.
+ </tag:description>
+ 
+ <para>
+-Declare these macros traced, i.e. informations about these macros will
++Declare these macros traced, i.e. information about these macros will
+ be printed if <optflag d /> flag or <command debugmode /> macro are used.
+ </para>
+ 
+@@ -2257,7 +2257,7 @@ A format specification as used with the strftime(3) C library routine.
+ 
+ <para>
+ Prints the time spent since last call to this macro.  The printed value
+-is the number of clock ticks, and so is dependant of your CPU.
++is the number of clock ticks, and so is dependent of your CPU.
+ </para>
+ 
+ <example>
+@@ -2519,7 +2519,7 @@ Macros are characterized by
+ <item>container status (simple or complex)</item>
+ <item>if attributes are expanded or not</item>
+ <item>function type (primitive or user defined macro)</item>
+-<item>for primitives, adress of corresponding code in memory and for
++<item>for primitives, address of corresponding code in memory and for
+ user defined macros the replacement text</item>
+ </list>
+ 
+@@ -2652,7 +2652,7 @@ and footers with
+ <define-tag header>
+ <html*>
+ <head>
+-... put here some informations ....
++... put here some information ....
+ </head>
+ <body* bgcolor="#ffffff" text="#000000">
+ </define-tag>
+diff --git a/src/builtin.c b/src/builtin.c
+index c861799..694531a 100644
+--- a/src/builtin.c
++++ b/src/builtin.c
+@@ -1312,7 +1312,7 @@ mp4h_bp_function_def (MP4H_BUILTIN_ARGS)
+ #ifdef HAVE_FILE_FUNCS
+ 
+ /*-----------------------------------------------------------------.
+-| Informations on a file.  A newline separated string is printed:  |
++| Information on a file.  A newline separated string is printed:   |
+ |    Line 1: file size                                             |
+ |    Line 2: file type                                             |
+ |    Line 3: time of last change                                   |
+@@ -4279,7 +4279,7 @@ mp4h_bp_decrement (MP4H_BUILTIN_ARGS)
+ }
+ 
+ /*--------------------------------.
+-| Dumps informations of symbols.  |
++| Dumps information of symbols.   |
+ `--------------------------------*/
+ static void
+ mp4h_bp_symbol_info (MP4H_BUILTIN_ARGS)
+diff --git a/src/module.c b/src/module.c
+index 54316fa..fe4031a 100755
+--- a/src/module.c
++++ b/src/module.c
+@@ -56,7 +56,7 @@
+  *
+  * The code implementing loadable modules is modest.  It is divided
+  * between the files builtin.c (user interface and support for multiple
+- * builtin tables) and this file (OS dependant routines).
++ * builtin tables) and this file (OS dependent routines).
+  *
+  * To load a module, use `loadmodule(modulename)'.  The function
+  * `m4_loadmodule' calls module_load() in this file, which uses

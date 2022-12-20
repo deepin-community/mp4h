@@ -1,0 +1,10 @@
+1.3.1-4.diff
+559822-nmu.diff
+573599-regression.diff
+mp4h-auto.diff
+lintian-cleanup-tg.diff
+653362-fix-ftbfs-on-hurd.diff
+fix-ftbfs-with-hardening-flags.diff
+use-system-pcre.diff
+reproducible-build.diff
+fix-spelling-errors.diff

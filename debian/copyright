@@ -1,0 +1,51 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: mp4h
+Source: https://web.archive.org/web/20031206101441/http://mp4h.tuxfamily.org/distrib/
+        http://mp4h.cvs.sourceforge.net/viewvc/mp4h/mp4h/
+        https://github.com/mp4h/mp4h
+
+Files: *
+Copyright: 2000-2003 Denis Barbier <barbier@linuxfr.org>
+License: GPL-2+
+
+Files: lib/*.c lib/*.h
+Copyright: 1987-2000 Free Software Foundation, Inc.
+License: LGPL-2+
+
+Files: lib/x*.c
+Copyright: 1990-1996 Free Software Foundation, Inc.
+License: GPL-2+
+
+Files: debian/*
+Copyright: 2000-2003 Denis Barbier <barbier@linuxfr.org>
+           2010-2015 Axel Beckert <abe@debian.org>
+License: GPL-2+
+
+License: GPL-2+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2, or (at your option)
+ any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ On Debian systems, the complete text of the GNU General Public
+ License version 2 can be found in /usr/share/common-licenses/GPL-2.
+
+License: LGPL-2+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU Library General Public License as
+ published by the Free Software Foundation; either version 2 of the
+ License, or (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Library General Public License for more details.
+ .
+ On Debian systems, the complete text of the GNU Library General
+ Public License version 2 can be found in
+ /usr/share/common-licenses/LGPL-2.

@@ -1,0 +1,15 @@
+Description: Fix spelling errors found by Lintian
+Author: Axel Beckert <abe@debian.org>
+Forwarded: no
+
+--- a/doc/mp4h.mp4h
++++ b/doc/mp4h.mp4h
+@@ -1946,7 +1946,7 @@
+ </attributes:item>
+ 
+ <attributes:item "alt=<var action />">
+-If file is not found, this alternate action is handled. If this atribute
++If file is not found, this alternate action is handled. If this attribute
+ is not set and file is not found, then an error is raised. This attribute has no effect
+ when the command attribute is specified.
+ </attributes:item>

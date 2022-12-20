@@ -1,0 +1,167 @@
+Description: Reduce build meta data in documentation
+ This is part of the effort to make the build of this package
+ reproducible. SOURCE_DATE_EPOCH support based on
+ https://wiki.debian.org/ReproducibleBuilds/TimestampsProposal#C
+ .
+ Also fixes test suite failures depending on file system order.
+Author: Axel Beckert <abe@debian.org>
+Last-Update: 2015-10-16
+
+Index: mp4h/doc/mp4h.mp4h
+===================================================================
+--- mp4h.orig/doc/mp4h.mp4h	2015-12-13 20:59:57.000000000 +0100
++++ mp4h/doc/mp4h.mp4h	2015-10-17 22:38:58.000000000 +0200
+@@ -664,7 +664,7 @@
+ <set-var version="0.10.1" />
+ This is version <get-var version />
+ <set-var-x name="osversion">Operating system is
+-"<include command="uname" /><include command="uname -r" />"</set-var-x>
++"<include command="uname" />"</set-var-x>
+ <get-var osversion />
+ </example>
+ 
+@@ -1958,7 +1958,7 @@
+ </attributes:description>
+ 
+ <example>
+-<include command="uname -a" />
++<include command="uname -s" />
+ </example>
+ 
+ 
+@@ -2261,8 +2261,9 @@
+ </para>
+ 
+ <example>
+-The number of clock ticks since the beginning of generation of
+-this documentation by &mp4h; is:
++<timer/>
++The number of clock ticks since the beginning of the parsing of
++this example by &mp4h; is:
+ <timer/>
+ </example>
+ 
+Index: mp4h/src/builtin.c
+===================================================================
+--- mp4h.orig/src/builtin.c	2015-12-13 20:59:57.000000000 +0100
++++ mp4h/src/builtin.c	2015-12-13 21:01:58.476123778 +0100
+@@ -36,6 +36,8 @@
+ #undef MP4H_MODULE
+ 
+ #include "builtin.h"
++#include <errno.h>
++#include <limits.h>
+ 
+ #define CHECK_SAFETY_LEVEL(sl)                                  \
+   if (safety_level > sl)                                        \
+@@ -1328,6 +1330,9 @@
+   struct stat buf;
+   struct passwd *user;
+   struct group *group;
++  char *endp = NULL;
++  char *source_date_epoch;
++  unsigned long long epoch;
+ 
+   CHECK_SAFETY_LEVEL(1);
+ 
+@@ -1353,12 +1358,42 @@
+     obstack_grow (obs, "UNKNOWN", 7);
+ 
+   obstack_1grow (obs, '\n');
+-  shipout_long (obs, (long) buf.st_ctime);
+-  obstack_1grow (obs, '\n');
+-  shipout_long (obs, (long) buf.st_mtime);
+-  obstack_1grow (obs, '\n');
+-  shipout_long (obs, (long) buf.st_atime);
+-  obstack_1grow (obs, '\n');
++
++  source_date_epoch = getenv("SOURCE_DATE_EPOCH");
++  if (source_date_epoch) {
++    errno = 0;
++    epoch = strtoull(source_date_epoch, &endp, 10);
++    if ((errno == ERANGE && (epoch == ULLONG_MAX || epoch == 0))
++        || (errno != 0 && epoch == 0)) {
++      fprintf(stderr, "Environment variable $SOURCE_DATE_EPOCH: strtoull: %s\n", strerror(errno));
++      exit(EXIT_FAILURE);
++    }
++    if (endp == source_date_epoch) {
++      fprintf(stderr, "Environment variable $SOURCE_DATE_EPOCH: No digits were found: %s\n", endp);
++      exit(EXIT_FAILURE);
++    }
++    if (*endp != '\0') {
++      fprintf(stderr, "Environment variable $SOURCE_DATE_EPOCH: Trailing garbage: %s\n", endp);
++      exit(EXIT_FAILURE);
++    }
++    if (epoch > ULONG_MAX) {
++      fprintf(stderr, "Environment variable $SOURCE_DATE_EPOCH: value must be smaller than or equal to: %lu but was found to be: %llu \n", ULONG_MAX  ,epoch);
++      exit(EXIT_FAILURE);
++    }
++    shipout_long (obs, (long) epoch);
++    obstack_1grow (obs, '\n');
++    shipout_long (obs, (long) epoch);
++    obstack_1grow (obs, '\n');
++    shipout_long (obs, (long) epoch);
++    obstack_1grow (obs, '\n');
++  } else {
++    shipout_long (obs, (long) buf.st_ctime);
++    obstack_1grow (obs, '\n');
++    shipout_long (obs, (long) buf.st_mtime);
++    obstack_1grow (obs, '\n');
++    shipout_long (obs, (long) buf.st_atime);
++    obstack_1grow (obs, '\n');
++  }
+   user = getpwuid (buf.st_uid);
+   if (user)
+     obstack_grow (obs, user->pw_name, strlen (user->pw_name));
+@@ -1513,6 +1548,8 @@
+   const char *format, *timespec;
+   struct tm *timeptr;
+   char *endp = NULL;
++  char *source_date_epoch;
++  unsigned long long epoch;
+ 
+   format = predefined_attribute ("format", &argc, argv, FALSE);
+   timespec = predefined_attribute ("time", &argc, argv, FALSE);
+@@ -1533,8 +1570,33 @@
+           return;
+         }
+     }
+-  else
+-    epoch_time = time ((time_t *)NULL);
++  else {
++    source_date_epoch = getenv("SOURCE_DATE_EPOCH");
++    if (source_date_epoch) {
++      errno = 0;
++      epoch = strtoull(source_date_epoch, &endp, 10);
++      if ((errno == ERANGE && (epoch == ULLONG_MAX || epoch == 0))
++          || (errno != 0 && epoch == 0)) {
++        fprintf(stderr, "Environment variable $SOURCE_DATE_EPOCH: strtoull: %s\n", strerror(errno));
++        exit(EXIT_FAILURE);
++      }
++      if (endp == source_date_epoch) {
++        fprintf(stderr, "Environment variable $SOURCE_DATE_EPOCH: No digits were found: %s\n", endp);
++        exit(EXIT_FAILURE);
++      }
++      if (*endp != '\0') {
++        fprintf(stderr, "Environment variable $SOURCE_DATE_EPOCH: Trailing garbage: %s\n", endp);
++        exit(EXIT_FAILURE);
++      }
++      if (epoch > ULONG_MAX) {
++        fprintf(stderr, "Environment variable $SOURCE_DATE_EPOCH: value must be smaller than or equal to: %lu but was found to be: %llu \n", ULONG_MAX  ,epoch);
++        exit(EXIT_FAILURE);
++      }
++      epoch_time = epoch;
++    } else {
++      epoch_time = time ((time_t *)NULL);
++    }
++  }
+ 
+   timeptr = (struct tm *) localtime (&epoch_time);
+   if (format) 
+Index: mp4h/tests/directory-contents/01.in
+===================================================================
+--- mp4h.orig/tests/directory-contents/01.in	2015-12-13 20:59:52.000000000 +0100
++++ mp4h/tests/directory-contents/01.in	2015-12-13 20:59:57.000000000 +0100
+@@ -1 +1 @@
+-<directory-contents . matching="01\..." />
++<set-var files="<directory-contents . matching="01\..." />" /><sort files /><get-var files />

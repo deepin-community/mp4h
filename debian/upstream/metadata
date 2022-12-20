@@ -1,0 +1,6 @@
+%YAML 1.1
+---
+# https://wiki.debian.org/UpstreamMetadata
+Contact: Denis Barbier <barbier@linuxfr.org>
+Name: mp4h (Macro Processor for HTML Documents)
+Homepage: https://sourceforge.net/projects/mp4h/

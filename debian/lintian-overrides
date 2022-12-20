@@ -1,0 +1,6 @@
+# https://bugs.debian.org/204975 in debhelper
+mp4h: postinst-has-useless-call-to-ldconfig
+
+# Unfortunately an mp4h command which cannot be changed
+mp4h: spelling-error-in-binary usr/bin/mp4h substract subtract
+mp4h: spelling-error-in-manpage usr/share/man/man1/mp4h.1.gz substract subtract

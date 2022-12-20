@@ -1,0 +1,31 @@
+Source: mp4h
+Section: web
+Priority: optional
+Maintainer: Axel Beckert <abe@debian.org>
+Standards-Version: 4.1.4
+Build-Depends: autoconf (>= 2.57~),
+               debhelper (>= 9~),
+               dh-autoreconf,
+               fakeroot,
+               gettext,
+               libltdl-dev,
+               libpcre3-dev,
+               libtool,
+               tidy
+Build-Conflicts: autoconf2.13,
+                 automake1.4
+Vcs-Browser: https://salsa.debian.org/debian/mp4h
+Vcs-Git: https://salsa.debian.org/debian/mp4h.git
+Homepage: https://sourceforge.net/projects/mp4h/
+
+Package: mp4h
+Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: Macro processor for HTML documents
+ Mp4h is a macro processor specifically designed for HTML documents,
+ with powerful programming features. It allows definition and expansion
+ of new tags with a syntax familiar to HTML authors.
+ .
+ Mp4h is a core component of the Website Meta Language (WML).

@@ -1,0 +1,2 @@
+<set-var stat=<get-file-properties <__file__/> /> />
+<get-var stat[0] />

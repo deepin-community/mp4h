@@ -1,0 +1,43 @@
+Description: Fix compatibility with newer automake versions
+Author: Eric Dorland <eric@debian.org>
+Acked-By: Axel Beckert <abe@debian.org>
+Bug-Debian: https://bugs.debian.org/724418
+
+Index: mp4h/Makefile.am
+===================================================================
+--- mp4h.orig/Makefile.am	2013-09-25 01:36:06.990597072 +0200
++++ mp4h/Makefile.am	2013-09-25 01:36:09.294634979 +0200
+@@ -10,7 +10,7 @@
+ SUBDIRS = pcre lib src po doc tests
+ endif
+ 
+-EXTRA_DIST = CREDITS README README.pcre bootstrap.sh shtool
++EXTRA_DIST = config.rpath m4/ChangeLog CREDITS README README.pcre bootstrap.sh shtool
+ 
+ deb:
+ 	if test -f ../mp4h_$(VERSION).orig.tar.gz; then \
+Index: mp4h/configure.ac
+===================================================================
+--- mp4h.orig/configure.ac	2013-09-25 01:36:06.990597072 +0200
++++ mp4h/configure.ac	2013-09-25 01:36:09.294634979 +0200
+@@ -29,7 +29,6 @@
+ AC_MINIX
+ AC_ISC_POSIX
+ 
+-AM_C_PROTOTYPES
+ AC_HEADER_STDC
+ 
+ AC_TYPE_SIZE_T
+Index: mp4h/src/Makefile.am
+===================================================================
+--- mp4h.orig/src/Makefile.am	2013-09-25 01:36:06.990597072 +0200
++++ mp4h/src/Makefile.am	2013-09-25 01:36:09.294634979 +0200
+@@ -17,7 +17,7 @@
+ if LOADABLE_MODULES
+ mp4h_LDFLAGS = -export-dynamic
+ endif
+-mp4h_LDADD   = -lm $(top_builddir)/lib/libmp4h.a $(top_builddir)/pcre/libpcre.a @LTLIBINTL@ $(MODULE_LDADD)
++mp4h_LDADD   = -lm $(top_builddir)/lib/libmp4h.a $(top_builddir)/pcre/libpcre.a @LIBINTL@ $(MODULE_LDADD)
+ 
+ include_HEADERS = mp4h.h
+ noinst_HEADERS  = builtin.h

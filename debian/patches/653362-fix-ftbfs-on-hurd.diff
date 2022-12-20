@@ -1,0 +1,56 @@
+Description: Fixes FTBFS on GNU Hurd
+Source: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=653362#5
+Author: Svante Signell <svante.signell@telia.com>
+
+Index: mp4h/configure.ac
+===================================================================
+--- mp4h.orig/configure.ac	2013-09-25 01:36:09.294634979 +0200
++++ mp4h/configure.ac	2013-09-25 01:36:29.122961324 +0200
+@@ -37,7 +37,7 @@
+ AC_CHECK_HEADERS([limits.h locale.h memory.h stdarg.h string.h unistd.h time.h])
+ AC_CHECK_HEADERS([pwd.h grp.h dirent.h sys/param.h sys/stat.h sys/types.h sys/times.h])
+ 
+-AC_CHECK_FUNCS([mkstemp strchr strerror tmpfile getpwuid getgrgid bcopy memmove])
++AC_CHECK_FUNCS([mkstemp strchr strerror tmpfile getpwuid getgrgid bcopy memmove canonicalize_file_name])
+ AC_FUNC_ALLOCA
+ AC_FUNC_VPRINTF
+ AC_REPLACE_FUNCS(strtol obstack xmalloc xstrdup)
+Index: mp4h/src/builtin.c
+===================================================================
+--- mp4h.orig/src/builtin.c	2013-09-25 01:36:27.842940261 +0200
++++ mp4h/src/builtin.c	2013-09-25 01:36:29.126961385 +0200
+@@ -1468,7 +1468,11 @@
+ mp4h_bp_real_path (MP4H_BUILTIN_ARGS)
+ {
+   const char *pathname;
++#ifdef HAVE_CANONICALIZE_FILE_NAME
++  char *resolvedname = NULL;
++#else
+   char resolvedname[MAXPATHLEN];
++#endif
+ 
+   CHECK_SAFETY_LEVEL(1);
+ 
+@@ -1478,12 +1482,22 @@
+       _("Warning:%s:%d: In <%s>, required attribute `%s' is not specified"),
+            CURRENT_FILE_LINE, ARG (0), "pathname"));
+   else
++#ifdef HAVE_CANONICALIZE_FILE_NAME
++    if ((resolvedname = canonicalize_file_name(pathname)) == NULL)
++#else
+     if (!realpath(pathname, resolvedname))
++#endif
+       MP4HERROR ((warning_status, errno,
+         _("Error:%s:%d: Cannot form real path for `%s'"),
+           CURRENT_FILE_LINE, pathname));
+     else
++      {
+       obstack_grow(obs, resolvedname, strlen(resolvedname));
++#ifdef HAVE_CANONICALIZE_FILE_NAME
++      free(resolvedname);
++#endif
++
++      }
+ }
+ #endif /* HAVE_FILE_FUNCS */
+ 

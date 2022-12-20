@@ -1,0 +1,89 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+export DEB_BUILD_MAINT_OPTIONS=hardening=+all
+
+# aclocal (called from autoreconf) finds gettext *.m4 files
+GETTEXT_TOP_FILES=	ABOUT-NLS config.rpath
+GETTEXT_PO_FILES=	Makefile.in.in Rules-quot boldquot.sed \
+			en@boldquot.header en@quot.header insert-header.sin \
+			quot.sed remove-potcdate.sin
+
+%:
+	dh $@ --parallel
+
+override_dh_auto_configure:
+	# Move everything we don't need away
+	tar cvf debian/not-needed-for-build.tar \
+		intl ABOUT-NLS po/Makefile.in.in aclocal.m4 config.guess config.sub \
+		config.h.in configure depcomp install-sh ltmain.sh missing \
+		mkinstalldirs src/ltdl.* `find . -name Makefile.in` pcre
+	# Use external PCRE and libtool only
+	rm -rf src/ltdl.* ltmain.sh pcre
+
+	test -d m4 || mkdir m4
+	for f in ${GETTEXT_TOP_FILES}; do \
+		cp -f /usr/share/gettext/$$f .; \
+	done
+	for f in ${GETTEXT_PO_FILES}; do \
+		cp -f /usr/share/gettext/po/$$f po/; \
+	done
+
+	dh_autoreconf
+
+	dh_auto_configure -- \
+	    --without-included-ltdl \
+	    --with-modules='intl:gettext' \
+	    --with-tidy=/usr/bin/tidy
+
+override_dh_auto_build:
+	# fakeroot and timezone setting are necessary to help to make
+	# the build reproducible as the documentation lists e.g. the
+	# user name under which the documentation is built and you
+	# can't easily patch that out as the documentation shows off
+	# every feature it describes. So if you remove a feature, you
+	# need to remove its example and hence the feature would be
+	# half missing in the documentation.
+	env TZ=UTC fakeroot dh_auto_build --parallel
+
+override_dh_auto_clean:
+	-tar cvf debian/needed-after-clean.tar ABOUT-NLS po/Makefile.in.in
+	dh_autoreconf_clean
+	# PO stuff
+	cd po && rm -f ${GETTEXT_PO_FILES} stamp-po POTFILES Makefile.in
+	rm -f ${GETTEXT_TOP_FILES}
+	# Restore as much as possible for easy VCS usage
+	[ ! -f debian/needed-after-clean.tar ] || tar xvf debian/needed-after-clean.tar
+	[ ! -f debian/not-needed-for-build.tar ] || tar xvf debian/not-needed-for-build.tar
+	find . -name .deps -o -name .libs | xargs -r rm -rv
+	find . -not -path './debian/*' \
+	       '(' -name '*.[ao13]' \
+	        -o -name '*.l[ao]' \
+	        -o -name Makefile ')' \
+	       -delete
+	rm -rf libltdl
+
+override_dh_auto_install:
+	dh_auto_install
+	sed -e "/dependency_libs/ s/'.*'/''/" \
+	    -i "`find $(CURDIR)/debian/mp4h/usr/lib -name gettext.la`"
+	-find $(CURDIR)/debian/mp4h -type d -empty -delete
+	# The "user" value depends on the time needed to generate the
+	# documentation and hence varies _always_. But since this is
+	# just an example value, we retroactively hardcode it to a
+	# fixed value so that the package builds reproducible.
+	sed -e 's/\(user\|sys\) [0-9][0-9]*/\1 23/g' -i debian/mp4h/usr/share/man/man1/mp4h.1
+
+override_dh_installdocs:
+	dh_installdocs
+	# The "user" value depends on the time needed to generate the
+	# documentation and hence varies _always_. But since this is
+	# just an example value, we retroactively hardcode it to a
+	# fixed value so that the package builds reproducible.
+	sed -e 's/\b\(user\|sys\) [0-9][0-9]*/\1 23/g' -i debian/mp4h/usr/share/doc/mp4h/mp4h.html
+
+override_dh_makeshlibs:
+	# NOOP to avoid lintian warning
+	# package-has-unnecessary-activation-of-ldconfig-trigger

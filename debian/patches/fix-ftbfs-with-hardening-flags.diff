@@ -1,0 +1,27 @@
+Description: Fixes FTBFS with -Werror=format-security
+ mp4h.c:358:11: error: format not a string literal and no format arguments [-Werror=format-security]
+ mp4h.c:472:17: error: format not a string literal and no format arguments [-Werror=format-security]
+Author: Axel Beckert <abe@debian.org>
+
+Index: mp4h/src/mp4h.c
+===================================================================
+--- mp4h.orig/src/mp4h.c	2013-04-23 21:54:05.780917115 +0200
++++ mp4h/src/mp4h.c	2013-04-24 00:30:39.825978669 +0200
+@@ -355,7 +355,7 @@
+ 
+       case 'o':
+         if (!debug_set_output (optarg))
+-          error (0, errno, optarg);
++          error (0, errno, "%s", optarg);
+         break;
+ 
+       case 's':
+@@ -469,7 +469,7 @@
+             fp = path_search (argv[optind], &filename);
+             if (fp == NULL)
+               {
+-                error (0, errno, argv[optind]);
++                error (0, errno, "%s", argv[optind]);
+                 MP4HERROR ((warning_status, 0,
+                    _("%s: file skipped"), argv[optind]));
+                 continue;

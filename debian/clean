@@ -1,0 +1,16 @@
+config.h
+config.log
+config.status
+libtool
+stamp-h1
+debian/*.tar
+doc/mp4h.html
+doc/mp4h.pod
+modules/intl/gettext.mp4hp
+src/mp4h
+pcre/chartables.c
+pcre/dftables
+tests/*/*.out
+tests/*.log
+tests/*.trs
+*.out

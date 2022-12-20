@@ -1,0 +1,55 @@
+Description: Build against system copy of PCRE3
+Author: Axel Beckert <abe@debian.org>
+
+Index: mp4h/Makefile.am
+===================================================================
+--- mp4h.orig/Makefile.am	2013-09-25 01:46:25.960808371 +0200
++++ mp4h/Makefile.am	2013-09-25 01:46:26.008809186 +0200
+@@ -2,12 +2,12 @@
+ AUTOMAKE_OPTIONS = foreign
+ ACLOCAL_AMFLAGS = -I m4
+ 
+-DIST_SUBDIRS = pcre lib src po doc modules tests
++DIST_SUBDIRS = lib src po doc modules tests
+ 
+ if LOADABLE_MODULES
+-SUBDIRS = pcre lib src po doc modules tests
++SUBDIRS = lib src po doc modules tests
+ else
+-SUBDIRS = pcre lib src po doc tests
++SUBDIRS = lib src po doc tests
+ endif
+ 
+ EXTRA_DIST = config.rpath m4/ChangeLog CREDITS README README.pcre bootstrap.sh shtool
+Index: mp4h/src/Makefile.am
+===================================================================
+--- mp4h.orig/src/Makefile.am	2013-09-25 01:46:25.960808371 +0200
++++ mp4h/src/Makefile.am	2013-09-25 01:46:26.008809186 +0200
+@@ -1,5 +1,5 @@
+ 
+-INCLUDES = -I$(top_srcdir)/pcre -I$(top_srcdir)/lib @INTLINCL@ $(LTDLINCL)
++INCLUDES = -I$(top_srcdir)/lib @INTLINCL@ $(LTDLINCL)
+ 
+ bin_PROGRAMS = mp4h
+ 
+@@ -17,7 +17,7 @@
+ if LOADABLE_MODULES
+ mp4h_LDFLAGS = -export-dynamic
+ endif
+-mp4h_LDADD   = -lm $(top_builddir)/lib/libmp4h.a $(top_builddir)/pcre/libpcre.a @LIBINTL@ $(MODULE_LDADD)
++mp4h_LDADD   = -lm $(top_builddir)/lib/libmp4h.a -lpcre @LIBINTL@ $(MODULE_LDADD)
+ 
+ include_HEADERS = mp4h.h
+ noinst_HEADERS  = builtin.h
+Index: mp4h/configure.ac
+===================================================================
+--- mp4h.orig/configure.ac	2013-09-25 01:46:25.984808776 +0200
++++ mp4h/configure.ac	2013-09-25 01:46:26.008809186 +0200
+@@ -143,7 +143,6 @@
+ 
+ AC_CONFIG_FILES([
+    Makefile
+-   pcre/Makefile
+    lib/Makefile
+    src/Makefile
+    po/Makefile.in

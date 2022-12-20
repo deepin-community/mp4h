@@ -1,0 +1,10 @@
+#!/bin/sh
+
+sed -e 's:program=../../src/mp4h:program=/usr/bin/mp4h:' -i tests/test.sh
+sed -e 's:unable to determine terminal sequence for bold mode" 1>\&2:unable to determine terminal sequence for bold mode":' -i shtool
+
+set -e 
+cd tests/
+./test.sh
+sed -e 's:program=/usr/bin/mp4h:program=../../src/mp4h:' -i test.sh
+sed -e 's:unable to determine terminal sequence for bold mode":unable to determine terminal sequence for bold mode" 1>\&2:' -i ../shtool

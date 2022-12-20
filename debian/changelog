@@ -1,0 +1,405 @@
+mp4h (1.3.1-deepin1) unstable; urgency=medium
+
+  * Rebuild
+
+ -- Deepin Packages Builder <packages@deepin.org>  Mon, 14 Nov 2022 17:47:55 +0800
+
+mp4h (1.3.1-17) unstable; urgency=medium
+
+  [ Axel Beckert ]
+  * Update Vcs-* headers for packaging repository moving to Salsa.
+  * Drop one-man-team from Maintainer field, set myself personally there
+    instead. (Closes: #899914)
+  * Remove trailing whitespace from ancient debian/changelog entries.
+  * Declare compliance with Debian Policy 4.1.4.
+    + Update debian/copyright format URL and another one to HTTPS.
+  * Drop no more needed Testsuite field from debian/control.
+  * Add (mostly redundant) DEP12 debian/upstream/metadata file.
+  * Add patch to fix spelling error found by lintian in man page.
+
+  [ Helmut Grohne ]
+  * Link libpcre dynamically. (Closes: #901534)
+
+ -- Axel Beckert <abe@debian.org>  Wed, 27 Jun 2018 02:04:54 +0200
+
+mp4h (1.3.1-16) unstable; urgency=medium
+
+  * Finetune regular expression for replacing <timer/> output in HTML
+    documentation to gain reproducibility. (Hopefully closes: #833437)
+  * Make all patch headers DEP-3 compatible and switch remaining
+    bugs.debian.org URLs to https://.
+  * Add lintian override for spelling-error-in-* since "substract" is a
+    command of mp4h and cannot be changed.
+
+ -- Axel Beckert <abe@debian.org>  Sat, 13 Aug 2016 00:17:10 +0200
+
+mp4h (1.3.1-15) unstable; urgency=medium
+
+  * Also overwrite the "sys" time counter in documentation examples. Can
+    vary, too, but happens more seldom, hence relevant for
+    reproducibility.
+
+ -- Axel Beckert <abe@debian.org>  Sat, 07 May 2016 19:55:04 +0200
+
+mp4h (1.3.1-14) unstable; urgency=medium
+
+  * Finally eradicate the last few non-deterministic bits in the
+    documentation by overwritting the time needed to generate the
+    documentation with a hardcoded value to make the build reproducible.
+
+ -- Axel Beckert <abe@debian.org>  Fri, 06 May 2016 17:44:34 +0200
+
+mp4h (1.3.1-13) unstable; urgency=medium
+
+  * Run documentation generation under TZ=UTC. Should make the build more
+    reproducible.
+  * Add comments for the reproducibility hacks in debian/rules like
+    fakeroot and friends. Thanks to Chris Lamb for the suggestion.
+  * Enable all hardening flags.
+  * Switch Vcs-Git header from git:// to https://.
+  * Switch Homepage header from http:// to https://.
+  * Remove (build-time generated) libltdl directory in clean target.
+  * Override dh_makeshlibs with an empty no-op rule to fix lintian warning
+    package-has-unnecessary-activation-of-ldconfig-trigger.
+  * Enable parallel building.
+  * Declare compliance with Debian Policy 3.9.8. (No changes needed.)
+
+ -- Axel Beckert <abe@debian.org>  Fri, 06 May 2016 01:11:01 +0200
+
+mp4h (1.3.1-12) unstable; urgency=medium
+
+  * Hopefully fix as-installed testing by patching shtool dynamically with
+    sed so that it doesn't output a specific warning to STDERR.
+  * Extend debian/patches/reproducible-build.diff to avoid having to use
+    faketime to properly set modification timestamps during the build.
+    + Drop build-dependency on faketime.
+  * Apply wrap-and-sort.
+
+ -- Axel Beckert <abe@debian.org>  Sun, 13 Dec 2015 21:34:04 +0100
+
+mp4h (1.3.1-11) unstable; urgency=low
+
+  * Upload to unstable again.
+  * Remove Built-Using header again. While parts of GNU gettext are under
+    GPL, none of the copied files are. They're all either too small to be
+    copyrightable or have a license without any relevant restrictions.
+  * debian/copyright: Only mention web.archive.org URL to make DUCK happy.
+  * Add SOURCE_DATE_EPOCH support to reproducible-build.diff patch.
+  * Remove lintian override for postrm-has-useless-call-to-ldconfig, no
+    more emitted.
+  * Make debian/tests/testsuite call test.sh inside the right directory.
+  * reproducible-build.diff: Add hunk which fixes test suite failures
+    depending on file system order.
+
+ -- Axel Beckert <abe@debian.org>  Sat, 17 Oct 2015 22:38:57 +0200
+
+mp4h (1.3.1-10) experimental; urgency=medium
+
+  * Try to make the build reproducible.
+    + Use fakeroot and recreate files where file meta data is used as
+      example.
+    + Use faketime where current date is used in examples.
+    + Add patch to reduce build meta data in documentation.
+  * Add http://sourceforge.net/projects/mp4h/ as homepage to have at least
+    one despite it's outdated (latest release there is 1.2.4)
+  * Declare compliance with Debian Policy 3.9.6 (no other changes needed).
+  * Add lintian overrides for post{rm,inst}-has-useless-call-to-ldconfig
+    as this is caused by #204975 in debhelper.
+  * Add tests/*.{log,trs} and *.out to debian/clean.
+  * Use cgit and https URL in Vcs-Browser header.
+  * Make package autopkgtestable.
+
+ -- Axel Beckert <abe@debian.org>  Wed, 13 May 2015 01:38:52 +0200
+
+mp4h (1.3.1-9) unstable; urgency=low
+
+  [ Eric Dorland ]
+  * Add patch to fix compatibility with newer automake versions
+
+  [ Axel Beckert ]
+  * Remove dependency on automake1.9: together with Eric's patch and
+    dh-autoreconf it's no more necessary. (Closes: #724418)
+  * Refresh patches 653362-fix-ftbfs-on-hurd and use-system-pcre
+
+ -- Axel Beckert <abe@debian.org>  Wed, 25 Sep 2013 02:07:04 +0200
+
+mp4h (1.3.1-8) unstable; urgency=low
+
+  * Upload to unstable again.
+  * Add Built-Using header due to copying files from gettext into the
+    build directory.
+
+ -- Axel Beckert <abe@debian.org>  Sat, 04 May 2013 11:03:20 +0200
+
+mp4h (1.3.1-7) experimental; urgency=low
+
+  * Fix FTBFS on GNU/Hurd (Closes: #653362) Thanks to Svante Signell for
+    investigation and the patch!
+  * Fix FTBFS with -Werror=format-security.
+  * Remove manual DEB_BUILD_OPTIONS check around dh_strip as dh_strip does
+    that itself.
+  * Bump Standards-Version to 3.9.4 (no changes)
+  * Bump debhelper compatibility to 9
+    + Add Pre-Depends on ${misc:Pre-Depends)
+  * Switch to source format "3.0 (quilt)"
+    + Drop build-dependency on quilt
+    + Drop debian/README.source
+    + Remove quilt traces from debian/rules
+  * Switch from autotools-dev to dh-autoreconf
+    + Update build-dependencies accordingly
+  * Revamp debian/rules:
+    + Use dh_auto_{configure,build,install}
+    + Support multiarch lib directories
+    + Make clean target more robust
+    + Use debian/docs and don't list upstream changelog explicitly
+    + Finally switch normalized debian/rules to minimal dh style
+  * Build against system copy of PCRE3
+    + Add build-dependency on libpcre3-dev
+    + No more install README.pcre into /usr/share/doc/mp4h
+  * Enable test suite at build time
+  * Apply wrap-and-sort
+  * Fix the following lintian warnings:
+    + vcs-field-not-canonical
+    + spelling-error-in-manpage (fix added to lintian-cleanup-tg.diff)
+
+ -- Axel Beckert <abe@debian.org>  Tue, 30 Apr 2013 00:23:40 +0200
+
+mp4h (1.3.1-6) unstable; urgency=low
+
+  * Bump Standards-Version to 3.9.2
+    + Clear the dependency_libs field of gettext.la.
+  * Bump debhelper compatibility to 7
+    + Replace "dh_clean -k" by "dh_prep"
+  * Remove Felipe Augusto van de Wiel (faw) from Uploaders on his own
+    request.
+  * Fix the following lintian warnings:
+    + debian-rules-missing-recommended-target
+    + copyright-refers-to-symlink-license
+
+ -- Axel Beckert <abe@debian.org>  Sat, 17 Dec 2011 19:39:12 +0100
+
+mp4h (1.3.1-5) unstable; urgency=low
+
+  [ Thorsten Glaser ]
+  * Do the equivalent of “gettextize -f” (which is interactive) manually
+    to upgrade the built-in gettext support (removing bundled libintl and
+    using the system one, as well as upgrading the po/ files).
+  * Fix a couple of lintian warnings:
+    - debian-watch-file-is-missing
+    - package-uses-deprecated-debhelper-compat-version 4
+    - possible-documentation-but-no-doc-base-registration
+    - spelling-error-in-manpage mp4h.1 adress address
+    - spelling-error-in-manpage mp4h.1 comand command
+    - spelling-error-in-manpage mp4h.1 dependant dependent
+    - spelling-error-in-manpage mp4h.1 informations information
+  * Calculate module path via make, not configure. (Closes: #573599)
+
+  [ Axel Beckert ]
+  * Move over to group maintenance
+    - Added Vcs-* headers to debian/control.
+  * Move over to quilt patch management
+    - Move all source code patches contained in the diff.gz into quilt
+      patches
+    - Split up in logical patches
+    - Update build dependencies
+    - Add patch targets and dependencies to debian/rules
+    - Remove patches for files removed in clean target now
+    - Add generic README.source
+  * Updated copyright file (new maintainers, refer to web.archive.org
+    mirror of original home page)
+  * Bumped Standards-Version to 3.8.4 (no changes)
+  * Added debian/source/format to silence lintian.
+  * Removed obsolete local variables from changelog.
+  * Convert debian/copyright to machine-readable DEP5 format.
+
+ -- Axel Beckert <abe@debian.org>  Wed, 24 Mar 2010 02:05:22 +0100
+
+mp4h (1.3.1-4.1) unstable; urgency=high
+
+  * Non-maintainer upload.
+  * Update the autotools/libtool subsystem, use libltdl from
+    the system instead of our own. (CVE-2009-3736) (Closes: #559822)
+  * Fix lintian copyright-without-copyright-notice (possible REJECT cause)
+  * Add missing ${misc:Depends} for debhelper to get them right
+
+ -- Thorsten Glaser <tg@mirbsd.de>  Thu, 04 Mar 2010 19:30:06 +0000
+
+mp4h (1.3.1-4) unstable; urgency=low
+
+  * Remove me from Maintainers.
+
+ -- Luk Claes <luk@debian.org>  Wed, 23 Jan 2008 22:42:50 +0000
+
+mp4h (1.3.1-3) unstable; urgency=low
+
+  * New maintainers.
+  * Updated Standards-Version to 3.7.2.
+  * Added debian/compat for debhelper 4.
+  * Updated debian/copyright.
+
+ -- Luk Claes <luk@debian.org>  Sat, 30 Sep 2006 11:34:45 +0200
+
+mp4h (1.3.1-2) unstable; urgency=low
+
+  * Some text was gobbled when run with -s flag.
+  * Add missing trailing slash in all provided modules, so that users
+    can output valid XHTML documents (Closes: Bug#218798).
+    Thanks Frank Lichtenheld.
+  * Update homepages for mp4h and WML.
+  * Dependency on debhelper is set to >= 2.
+  * Bump Standards-Version: 3.6.1, no changes needed.
+
+ -- Denis Barbier <barbier@debian.org>  Thu,  6 Nov 2003 20:34:24 +0100
+
+mp4h (1.3.1-1) unstable; urgency=low
+
+  * New upstream release
+  * Bump Standards-Version: 3.5.8
+
+ -- Denis Barbier <barbier@debian.org>  Sun, 12 Jan 2003 00:04:16 +0100
+
+mp4h (1.3.0-3) unstable; urgency=low
+
+  * Some argument checks were missing in <array-shift> and could
+    cause memory fault.  Thanks Jean-Michel Sauvage.
+
+ -- Denis Barbier <barbier@debian.org>  Fri, 27 Sep 2002 21:11:00 +0200
+
+mp4h (1.3.0-2) unstable; urgency=low
+
+  * Fix intl:gettext so that msgid can contain empty tags with a
+    trailing slash
+
+ -- Denis Barbier <barbier@debian.org>  Sun,  7 Jul 2002 16:56:04 +0200
+
+mp4h (1.3.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Upgrade Standards-Version to 3.5.6
+
+ -- Denis Barbier <barbier@debian.org>  Sat,  6 Jul 2002 23:43:50 +0200
+
+mp4h (1.2.99+cvs20020619-1) unstable; urgency=low
+
+  * mp4h 1.3 will enable loadable modules by default.  The 1.2.99 series
+    is used to debug this feature.
+
+ -- Denis Barbier <barbier@debian.org>  Wed, 19 Jun 2002 21:50:44 +0200
+
+mp4h (1.2.4-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Denis Barbier <barbier@debian.org>  Sat,  2 Mar 2002 23:22:32 +0100
+
+mp4h (1.2.3-2) unstable; urgency=low
+
+  * Apply upstream patches to keep track of line numbers in error messages.
+
+ -- Denis Barbier <barbier@debian.org>  Mon, 10 Dec 2001 23:43:27 +0100
+
+mp4h (1.2.3-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Denis Barbier <barbier@debian.org>  Fri, 26 Oct 2001 00:04:48 +0200
+
+mp4h (1.2.2-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Denis Barbier <barbier@debian.org>  Thu, 18 Oct 2001 10:36:20 +0200
+
+mp4h (1.2.1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Denis Barbier <barbier@debian.org>  Sun, 30 Sep 2001 01:19:31 +0200
+
+mp4h (1.2.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Remove copyright mention from the control file (Closes: #103497)
+
+ -- Denis Barbier <barbier@debian.org>  Sun, 26 Aug 2001 01:25:55 +0200
+
+mp4h (1.1.2-5) unstable; urgency=low
+
+  * Upgrade config.{sub,guess}
+
+ -- Denis Barbier <barbier@debian.org>  Sun,  8 Jul 2001 11:14:27 +0200
+
+mp4h (1.1.2-4) unstable; urgency=low
+
+  * Fix <get-file-properties>, which caused a segmentation fault
+    when applied to a file whose uid or gid cannot be resolved.
+
+ -- Denis Barbier <barbier@debian.org>  Sat, 21 Apr 2001 01:49:18 +0200
+
+mp4h (1.1.2-3) unstable; urgency=low
+
+  * Fix broken original tarball, it differed from 1.1.2-1
+
+ -- Denis Barbier <barbier@debian.org>  Thu, 15 Feb 2001 22:57:22 +0100
+
+mp4h (1.1.2-2) unstable; urgency=low
+
+  * Fix another bug with some conditionals: <ifeq>, <ifneq>
+
+ -- Denis Barbier <barbier@debian.org>  Wed, 14 Feb 2001 22:03:46 +0100
+
+mp4h (1.1.2-1) unstable; urgency=low
+
+  * New upstream version.
+  * Fix bug with conditionals (Closes: #76049)
+
+ -- Denis Barbier <barbier@debian.org>  Wed,  8 Nov 2000 00:33:32 +0100
+
+mp4h (1.1.1-1) unstable; urgency=low
+
+  * New upstream version.
+  * Sponsored upload.
+
+ -- Josip Rodin <jrodin@jagor.srce.hr>  Thu, 31 Aug 2000 01:33:48 +0200
+
+mp4h (1.1.0-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Configure with --with-dmalloc to help solve the "disappearing 0xB3"
+    problem, as suggested by upstream author Denis Barbier.
+
+ -- Anthony Fok <foka@debian.org>  Tue, 29 Aug 2000 19:04:53 -0600
+
+mp4h (1.1.0-1) unstable; urgency=low
+
+  * New upstream version, closes: #69438.
+  * Sponsored upload.
+  * Updated to Standards-Version: 3.2.1.
+
+ -- Josip Rodin <jrodin@jagor.srce.hr>  Mon, 28 Aug 2000 00:19:06 +0200
+
+mp4h (1.0.2-0.1) unstable; urgency=low
+
+  * NMU of new upstream release to support WML 2.0.2
+
+ -- Brian Bassett <brianb@debian.org>  Fri, 23 Jun 2000 22:18:29 -0700
+
+mp4h (1.0.0-0.1) unstable; urgency=low
+
+  * New upstream release.
+  * NMU.
+
+ -- Brian Bassett <brianb@debian.org>  Tue, 20 Jun 2000 18:09:45 -0700
+
+mp4h (0.9.4-0.1) unstable; urgency=low
+
+  * NMU at request of upstream maintainer (and pending Debian developer)
+    to deal with WML issues.
+
+ -- Brian Bassett <brianb@debian.org>  Sun, 18 Jun 2000 12:18:14 -0700
+
+mp4h (0.8.0-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Denis Barbier <barbier@linuxfr.org>  Mon, 28 Feb 2000 21:46:36 +0100
